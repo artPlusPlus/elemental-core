@@ -1,0 +1,28 @@
+package:
+  name: elemental-core
+  version: "0.1.0dev1"
+
+source:
+  path: ../
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+test:
+  requires:
+    - pytest
+  imports:
+    - elemental_core
+
+about:
+  home: https://github.com/artplusplus/elemental-core.
+  summary: elemental-core contains functionality shared across Elemental CMS.
+  license: Mozilla Public License 2.0 (MPL 2.0)
+  license_file: LICENSE
