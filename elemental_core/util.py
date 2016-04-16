@@ -3,9 +3,6 @@ import uuid
 from ._elemental_base import ElementalBase
 
 
-NO_VALUE = object()
-
-
 def process_uuid_value(value):
     """
     Processes a value into a UUID.

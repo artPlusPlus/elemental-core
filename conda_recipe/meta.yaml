@@ -1,6 +1,6 @@
 package:
   name: elemental-core
-  version: "0.1.0dev2"
+  version: "0.1.1dev0"
 
 source:
   path: ../
