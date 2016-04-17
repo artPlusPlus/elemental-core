@@ -1,12 +1,9 @@
 package:
   name: elemental-core
-  version: "0.1.1dev1"
+  version: "0.1.1dev2"
 
 source:
   path: ../
-
-build:
-  noarch_python: True  # [not win]
 
 requirements:
   build:
