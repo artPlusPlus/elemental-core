@@ -1,9 +1,0 @@
-package: elemental-core
-platform:
-  - linux-64
-engine:
-  - python=3.5
-script:
-  - conda build --channel artplusplus ./.conda.recipe
-build_targets:
-  - conda
