@@ -1,6 +1,6 @@
 environment:
   BINSTAR_TOKEN:
-    secure: sL7HAw5l1todoPyUg8CSMccnwa+Yan68C+4tQyNPkg562NBltn4kYcs9q1VKT8TV
+    secure: F9q+hDZmW8jW5P+XgXS+t+hIoA2HZFK0KjG2xo77nUPBWHSZ2d/1R8MXFriQy7N6
 
   matrix:
     - PYTHON: "C:\\Python35_64"

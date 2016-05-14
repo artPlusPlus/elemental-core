@@ -24,12 +24,15 @@ def _main(*labels):
         '--force']
     cmd.extend(packages)
 
+    error = None
     try:
         subprocess.check_call(cmd)
     except Exception as e:
-        msg = 'binstar cmd failed: {0}'.format(e)
-        msg = msg.replace(token, '*'*len(token))
-        raise RuntimeError(msg)
+        error = 'binstar cmd failed: {0}'.format(e)
+        error = error.replace(token, '*' * len(token))
+
+    if error:
+        raise RuntimeError(error)
 
 
 if __name__ == '__main__':
