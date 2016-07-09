@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 conda build --channel artplusplus ./.conda.recipe
-conda install --use-local elemental-core
+conda install --channel artplusplus --use-local elemental-core
 py.test
 
 source deactivate

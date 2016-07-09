@@ -6,6 +6,9 @@ function main () {
     Write-Host "Building Package..."
     conda build --channel artplusplus .\.conda.recipe
 
+    Write-Host "Installing Built Package for Testing..."
+    conda install --channel artplusplus --use-local elemental-core
+
     Write-Host "Running Tests..."
     py.test
 

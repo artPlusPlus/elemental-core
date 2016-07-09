@@ -1,4 +1,5 @@
 import uuid
+import weakref
 
 import pytest
 
@@ -31,3 +32,8 @@ def test_process_uuid_value(value):
         else:
             result = elemental_core.util.process_uuid_value(value)
             assert result == value_uuid
+
+
+def test_no_value():
+    # NO_VALUE must be weakly referable
+    weakref.ref(elemental_core.NO_VALUE)
