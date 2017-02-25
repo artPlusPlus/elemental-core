@@ -17,9 +17,9 @@ __on_rtd__ = os.environ.get('READTHEDOCS', None) == 'True'
 
 __project__ = 'elemental-core'
 
-__version__ = '0.1'
+__version__ = '0.2'
 
-__release__ = '0.1.3dev0'
+__release__ = '0.2.0dev0'
 
 __classifiers__ = [
     'Development Status :: 1 - Planning',
