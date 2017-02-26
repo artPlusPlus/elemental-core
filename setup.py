@@ -1,97 +1,78 @@
-"""
-Functionality shared across Elemental CMS.
-"""
-
 import os
-import sys
-from setuptools import setup
+from setuptools import setup, find_packages
+
+import elemental_core
 
 
-HERE = os.path.abspath(os.path.dirname(__file__))
+def _get_long_description():
+    here = os.path.abspath(os.path.dirname(__file__))
+    with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+        return f.read()
 
 
-with open(os.path.join(HERE, 'README.md'), 'r') as f:
-    __long_description__ = f.read()
+name = elemental_core.__title__
+version = elemental_core.__version__
 
-__on_rtd__ = os.environ.get('READTHEDOCS', None) == 'True'
+description = elemental_core.__summary__
+long_description = _get_long_description()
+license = elemental_core.__license__
+url = elemental_core.__url__
 
-__project__ = 'elemental-core'
+author = elemental_core.__author__
+author_email = elemental_core.__email__
 
-__version__ = '0.2'
-
-__release__ = '0.2.0dev0'
-
-__classifiers__ = [
+classifiers = [
     'Development Status :: 1 - Planning',
-    'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
+    'License :: OSI Approved :: {0}'.format(license),
     'Intended Audience :: Developers',
-    'Environment :: Web Environment'
+    'Environment :: Web Environment',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     'Topic :: Software Development :: Libraries :: Python Modules'
 ]
+keywords = 'elemental cms core'
 
-__author__ = 'Matt Robinson'
+packages = find_packages(exclude=('tests', 'docs'))
 
-__author_email__ = 'matt@technicalartisan.com'
-
-__url__ = 'https://github.com/artPlusPlus/elemental-core'
-
-__license__ = [
-    c.rsplit('::', 1)[1].strip()
-    for c in __classifiers__
-    if c.startswith('License ::')
-][0]
-
-__keywords__ = [
-    'elemental',
-    'cms',
-    'core'
-]
-
-__packages__ = [
-    'elemental_core'
-]
-
-__platforms__ = 'ALL'
-
-__requires__ = []
-
-__test_suite__ = 'tests'
-
-__tests_require__ = [
-    'pytest'
-]
-
-__extra_requires__ = {
-    'doc': ['sphinx>=1.3.0']
+install_requires = []
+extras_require = {
+    'test': [
+        'pytest'
+    ],
+    'doc': [
+        'sphinx>=1.3.0'
+    ]
 }
 
-__entry_points__ = {}
+package_data = {}
+
+data_files = []
+
+entry_points = {}
 
 
-def main():
-    setup(
-        name                = __project__,
-        version             = __version__,
-        description         = __doc__,
-        long_description    = __long_description__,
-        classifiers         = __classifiers__,
-        author              = __author__,
-        author_email        = __author_email__,
-        url                 = __url__,
-        license             = __license__,
-        keywords            = __keywords__,
-        packages            = __packages__,
-        platforms           = __platforms__,
-        test_suite          = __test_suite__,
-        tests_require       = __tests_require__,
-        install_requires    = __requires__,
-        extras_require      = __extra_requires__,
-        entry_points        = __entry_points__
-    )
+def _run_setup():
+    setup_kwargs = {
+        'name': name,
+        'version': version,
+        'description': description,
+        'long_description': long_description,
+        'url': url,
+        'author': author,
+        'author_email': author_email,
+        'license': license,
+        'classifiers': classifiers,
+        'keywords': keywords,
+        'packages': packages,
+        'install_requires': install_requires,
+        'extras_require': extras_require,
+        'package_data': package_data,
+        'data_files': data_files,
+        'entry_points': entry_points
+    }
+    setup(**setup_kwargs)
 
 
 if __name__ == '__main__':
-    main()
+    _run_setup()
