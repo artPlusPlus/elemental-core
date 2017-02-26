@@ -23,12 +23,14 @@ classifiers = [
     'Environment :: Web Environment',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     'Topic :: Software Development :: Libraries :: Python Modules'
 ]
 keywords = 'elemental cms core'
 
-packages = find_packages(exclude=('tests', 'docs'))
+packages = find_packages(exclude=('tests', 'docs', 'scratch'))
 
 install_requires = []
 extras_require = {
