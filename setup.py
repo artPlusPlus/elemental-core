@@ -1,20 +1,15 @@
-import os
+import io
+
 from setuptools import setup, find_packages
 
 import elemental_core
-
-
-def _get_long_description():
-    here = os.path.abspath(os.path.dirname(__file__))
-    with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-        return f.read()
 
 
 name = elemental_core.__title__
 version = elemental_core.__version__
 
 description = elemental_core.__summary__
-long_description = _get_long_description()
+long_description = io.open('README.md', 'r', encoding='utf-8').read()
 license = elemental_core.__license__
 url = elemental_core.__url__
 
@@ -68,6 +63,7 @@ def _run_setup():
         'install_requires': install_requires,
         'extras_require': extras_require,
         'package_data': package_data,
+        'include_package_data': True,
         'data_files': data_files,
         'entry_points': entry_points
     }

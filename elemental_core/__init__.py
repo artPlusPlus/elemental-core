@@ -11,7 +11,7 @@ __title__ = 'elemental-core'
 __summary__ = 'Functionality shared across Elemental CMS.'
 __url__ = 'https://github.com/artPlusPlus/elemental-core'
 
-__version__ = '0.2.0.dev0'
+__version__ = '0.2.1.dev0'
 
 __author__ = 'Matt Robinson'
 __email__ = 'matt@technicalartisan.com'
