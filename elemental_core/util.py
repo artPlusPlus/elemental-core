@@ -1,9 +1,11 @@
 import uuid
 
+from typing import AnyStr, Sequence, List, Union, Optional
+
 from ._elemental_base import ElementalBase
 
 
-def process_uuid_value(value):
+def process_uuid_value(value: Union[AnyStr, uuid.UUID]) -> Optional[uuid.UUID]:
     """
     Processes a value into a UUID.
 
@@ -32,7 +34,7 @@ def process_uuid_value(value):
     return result
 
 
-def process_uuids_value(value):
+def process_uuids_value(value: Sequence[Union[AnyStr, uuid.UUID]]) -> List[uuid.UUID]:
     """
     Processes a sequence of values into a sequence of UUIDs.
 
@@ -82,7 +84,7 @@ def process_uuids_value(value):
     return result
 
 
-def process_elemental_class_value(value):
+def process_elemental_class_value(value: Union[AnyStr, ElementalBase]) -> ElementalBase:
     """
     Processes a name into an Elemental class.
 
@@ -107,7 +109,7 @@ def process_elemental_class_value(value):
     return result
 
 
-def process_data_format_value(value):
+def process_data_format_value(value: AnyStr) -> Optional[AnyStr]:
     """
     Computes a standardized label for a data format.
 

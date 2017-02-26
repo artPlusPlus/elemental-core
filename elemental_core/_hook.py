@@ -1,5 +1,7 @@
 import weakref
 
+from typing import Any, Callable
+
 
 class BoundHook(object):
     @property
@@ -18,7 +20,7 @@ class BoundHook(object):
             except TypeError:
                 self._default_data_value_ref = value
 
-    def __init__(self, default_data_value):
+    def __init__(self, default_data_value: Any):
         super(BoundHook, self).__init__()
 
         self._default_data_value_ref = None
@@ -26,7 +28,7 @@ class BoundHook(object):
 
         self._default_data_value = default_data_value
 
-    def add_handler(self, handler):
+    def add_handler(self, handler: Callable) -> None:
         handler_ref = self._create_handler_ref(handler)
         if not handler_ref:
             msg = 'Failed to add handler: Unable to create weak reference.'
@@ -34,14 +36,14 @@ class BoundHook(object):
 
         self._handler_refs.append(handler_ref)
 
-    def remove_handler(self, handler):
+    def remove_handler(self, handler: Callable) -> None:
         handler_ref = self._create_handler_ref(handler)
         if not handler_ref:
             return
 
         self._handler_refs.remove(handler_ref)
 
-    def __call__(self, sender, data=None):
+    def __call__(self, sender: Any, data: Any = None) -> None:
         if data is None:
             data = self._default_data_value
 
@@ -50,11 +52,11 @@ class BoundHook(object):
             if handler:
                 handler(sender, data)
 
-    def __iadd__(self, handler):
+    def __iadd__(self, handler: Callable) -> 'BoundHook':
         self.add_handler(handler)
         return self
 
-    def __isub__(self, handler):
+    def __isub__(self, handler: Callable) -> 'BoundHook':
         self.remove_handler(handler)
         return self
 
@@ -77,7 +79,7 @@ class BoundHook(object):
 
 
 class Hook(object):
-    def __init__(self, default_data_value=None):
+    def __init__(self, default_data_value: Any = None):
         super(Hook, self).__init__()
 
         self._bound_hooks = weakref.WeakKeyDictionary()

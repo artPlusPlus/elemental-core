@@ -1,6 +1,8 @@
 import traceback
 import sys
 
+from typing import AnyStr, Optional
+
 
 class ElementalError(Exception):
     """
@@ -8,21 +10,21 @@ class ElementalError(Exception):
     """
 
     @property
-    def message(self):
+    def message(self) -> Optional[AnyStr]:
         """
         str: Human readable string describing the exception.
         """
         return self._message
 
     @property
-    def inner_error(self):
+    def inner_error(self) -> Optional[Exception]:
         """
         Exception: Exception instance that caused this exception.
         """
         return self._inner_error
 
     @property
-    def traceback(self):
+    def traceback(self) -> Optional[AnyStr]:
         """
         str: Frame where inner_error was raised.
         """
@@ -30,7 +32,7 @@ class ElementalError(Exception):
             return self._traceback
         return None
 
-    def __init__(self, message, inner_error=None):
+    def __init__(self, message: AnyStr, inner_error: Exception = None):
         """
         Initializes a new `ElementalError` instance.
 
@@ -41,7 +43,10 @@ class ElementalError(Exception):
         """
         self._message = message
         self._inner_error = inner_error
-        self._traceback = traceback.format_tb(sys.exc_info()[-1])
+        if self._inner_error:
+            self._traceback = traceback.format_tb(sys.exc_info()[-1])
+        else:
+            self._traceback = None
 
     def __str__(self):
         if self._inner_error:
