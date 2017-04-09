@@ -6,3 +6,6 @@ class NoValue(object):
     def __nonzero__(self) -> bool:
         # Python 2.x
         return False
+
+
+NO_VALUE = NoValue()

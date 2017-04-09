@@ -1,19 +1,18 @@
-from ._no_value import NoValue
+from ._no_value import NoValue, NO_VALUE
 from ._elemental_error import ElementalError
 from ._elemental_base import ElementalBase
 from ._hook import Hook
 from ._hook_data import HookDataBase
 from ._hook_data import ValueChangedHookData
+from ._forward_reference import ForwardReference
 from . import util
 
-
-NO_VALUE = NoValue()
 
 __title__ = 'elemental-core'
 __summary__ = 'Functionality shared across Elemental CMS.'
 __url__ = 'https://github.com/artPlusPlus/elemental-core'
 
-__version__ = '0.2.2.dev1'
+__version__ = '0.3.0.dev0'
 
 __author__ = 'Matt Robinson'
 __email__ = 'matt@technicalartisan.com'
