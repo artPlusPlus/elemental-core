@@ -1,70 +1,55 @@
 import logging
-from typing import Callable
-import weakref
+from typing import (
+    Any,
+    Callable
+)
 
 from ._no_value import NO_VALUE
+from .util import (
+    create_weak_ref,
+    restore_weak_ref
+)
 
 _LOG = logging.getLogger(__name__)
 
 
 class BoundForwardReference(object):
     @property
-    def resolver(self):
-        return self._resolver
+    def reference_key(self):
+        if self._key_getter:
+            result = self._key_getter(self._instance)
+        else:
+            result = NO_VALUE
 
-    @resolver.setter
-    def resolver(self, value: Callable):
-        try:
-            self._resolver = weakref.WeakMethod(value)
-        except TypeError:
-            self._resolver = weakref.ref(value)
+        return result
 
-    def __init__(self, instance, resource_key_fget):
+    def __init__(self, instance, key_getter, populated_setter,
+                 reference_resolver):
         super(BoundForwardReference, self).__init__()
 
-        self._instance_ref = weakref.ref(instance)
-        try:
-            self._reference_key_getter_ref = weakref.ref(resource_key_fget)
-        except TypeError:
-            self._reference_key_getter_ref = resource_key_fget
-        self._resolver = None
+        self._instance = instance
+        self._key_getter = key_getter
+        self._populated_setter = populated_setter
+        self._reference_resolver = reference_resolver
 
-    def __call__(self, instance):
-        if not instance:
-            return self
-
-        ref_key = NO_VALUE
-        ref_key_getter = self._reference_key_getter_ref
-        if ref_key_getter:
-            if isinstance(ref_key_getter, weakref.ref):
-                ref_key_getter = ref_key_getter()
-                if not ref_key_getter:
-                    msg = (
-                        'Failed to resolve Reference: '
-                        'Reference Key Getter is invalid.'
-                    )
-                    raise RuntimeError(msg)
-            ref_key = ref_key_getter(instance)
-
-        resolver = self._resolver
-        if isinstance(resolver, weakref.ref):
-            resolver = resolver()
-        if not resolver:
-            msg = 'Failed to resolve Resource: Resolver reference dead.'
-            raise RuntimeError(msg)
+    def _resolve_reference(self):
+        if self._key_getter:
+            ref_key = self._key_getter(self._instance)
+        else:
+            ref_key = NO_VALUE
 
         try:
-            if ref_key is not NO_VALUE:
-                result = resolver(ref_key)
+            if ref_key is NO_VALUE:
+                result = self._reference_resolver()
             else:
-                result = resolver()
+                result = self._reference_resolver(ref_key)
         except Exception as e:
-            if ref_key is not NO_VALUE:
-                msg = 'Failed to resolve reference "{0}": {1} - {2}'
-                msg = msg.format(ref_key, type(e).__name__, e)
-            else:
+            if ref_key is NO_VALUE:
                 msg = 'Failed to resolve reference: {0} - {1}'
                 msg = msg.format(type(e).__name__, e)
+            else:
+                msg = 'Failed to resolve reference "{0}": {1} - {2}'
+                msg = msg.format(ref_key, type(e).__name__, e)
             _LOG.debug(msg)
         else:
             msg = 'Resolved Resource: "{0}"'
@@ -73,29 +58,72 @@ class BoundForwardReference(object):
 
         return result
 
+    def populate(self, reference_target: Any):
+        return self._populated_setter(self._instance, reference_target)
+
+    def __call__(self):
+        return self._resolve_reference()
+
 
 class ForwardReference(object):
-    def __init__(self, resource_key_fget=None):
+    @property
+    def reference_resolver(self) -> Callable:
+        return restore_weak_ref(self._reference_resolver_ref)
+
+    @reference_resolver.setter
+    def reference_resolver(self, value: Callable):
+        self._reference_resolver = create_weak_ref(value)
+
+    def __init__(self, key_getter=None, populated_setter=None,
+                 reference_resolver=None):
         super(ForwardReference, self).__init__()
 
-        self._resource_key_fget = resource_key_fget
-        self._bound_fwd_refs = weakref.WeakKeyDictionary()
+        self._key_getter = key_getter
+        self._populated_setter = populated_setter
+        self._reference_resolver = reference_resolver
+
+    def key_getter(self,
+                   key_getter: Callable
+                   ) -> 'ForwardReference':
+        return type(self)(key_getter=key_getter,
+                          populated_setter=self._populated_setter,
+                          reference_resolver=self._reference_resolver)
+
+    def populated(self,
+                  populated_setter: Callable
+                  ) -> 'ForwardReference':
+        return type(self)(key_getter=self._key_getter,
+                          populated_setter=populated_setter,
+                          reference_resolver=self._reference_resolver)
+
+    def resolver(self,
+                 reference_resolver: Callable
+                 ) -> 'ForwardReference':
+        return type(self)(key_getter=self._key_getter,
+                          populated_setter=self._populated_setter,
+                          reference_resolver=reference_resolver)
 
     def __get__(self, instance, owner=None):
         if not instance:
             return self
 
-        try:
-            result = self._bound_fwd_refs[instance]
-        except KeyError:
-            result = BoundForwardReference(instance, self._resource_key_fget)
-            self._bound_fwd_refs[instance] = result
-        else:
-            result = result(instance)
-
-        return result
+        return self._create_bound_forward_reference(instance)
 
     def __set__(self, instance, value):
-        if self._bound_fwd_refs.get(instance) is value:
+        if not instance:
+            msg = 'Cannot set ForwardReference.'
+            raise TypeError(msg)
+
+        if not self._populated_setter:
             return
-        raise ValueError()
+
+        self._create_bound_forward_reference(instance).populate(value)
+
+    def _create_bound_forward_reference(self, instance):
+        reference_resolver = restore_weak_ref(self._reference_resolver)
+
+        result = BoundForwardReference(instance, self._key_getter,
+                                       self._populated_setter,
+                                       reference_resolver)
+
+        return result
