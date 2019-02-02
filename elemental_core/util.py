@@ -1,20 +1,11 @@
 import uuid
 import weakref
-from typing import (
-    AnyStr,
-    Sequence,
-    List,
-    Union,
-    Optional,
-    Callable
-)
+from typing import AnyStr, Sequence, List, Union, Optional, Callable
 
 from ._elemental_base import ElementalBase
 
 
-def process_uuid_value(
-        value: Union[AnyStr, uuid.UUID]
-        ) -> Optional[uuid.UUID]:
+def process_uuid_value(value: Union[AnyStr, uuid.UUID]) -> Optional[uuid.UUID]:
     """
     Processes a value into a UUID.
 
@@ -43,9 +34,7 @@ def process_uuid_value(
     return result
 
 
-def process_uuids_value(
-        value: Sequence[Union[AnyStr, uuid.UUID]]
-        ) -> List[uuid.UUID]:
+def process_uuids_value(value: Sequence[Union[AnyStr, uuid.UUID]]) -> List[uuid.UUID]:
     """
     Processes a sequence of values into a sequence of UUIDs.
 
@@ -81,23 +70,18 @@ def process_uuids_value(
 
     if invalid_values:
         invalid_values = ['"{0}"'.format(id) for id in invalid_values]
-        invalid_values = ', '.join(invalid_values)
-        msg = 'Invalid uuid values: {0}'
+        invalid_values = ", ".join(invalid_values)
+        msg = "Invalid uuid values: {0}"
         msg = msg.format(invalid_values)
         raise ValueError(msg)
 
     seen = set()
-    result = [
-        id for id in valid_values
-        if id and not (id in seen or seen.add(id))
-    ]
+    result = [id for id in valid_values if id and not (id in seen or seen.add(id))]
 
     return result
 
 
-def process_elemental_class_value(
-        value: Union[AnyStr, ElementalBase]
-        ) -> ElementalBase:
+def process_elemental_class_value(value: Union[AnyStr, ElementalBase]) -> ElementalBase:
     """
     Processes a name into an Elemental class.
 
@@ -113,7 +97,7 @@ def process_elemental_class_value(
         result = None
 
     if not result:
-        value = str(value).lower().strip().replace(' ', '')
+        value = str(value).lower().strip().replace(" ", "")
         for elemental_cls in ElementalBase.iter_elemental_types():
             if value == elemental_cls.__name__.lower():
                 result = elemental_cls
@@ -122,9 +106,7 @@ def process_elemental_class_value(
     return result
 
 
-def process_data_format_value(
-        value: AnyStr
-        ) -> Optional[AnyStr]:
+def process_data_format_value(value: AnyStr) -> Optional[AnyStr]:
     """
     Computes a standardized label for a data format.
 
@@ -135,13 +117,13 @@ def process_data_format_value(
         Formatted string if successful, None otherwise.
     """
     if value:
-        return str(value).lower().strip().replace(' ', '_')
+        return str(value).lower().strip().replace(" ", "_")
     return None
 
 
 def create_weak_ref(
-        item: Union[Callable, object]
-        ) -> Union[weakref.WeakMethod, weakref.ReferenceType, object]:
+    item: Union[Callable, object]
+) -> Union[weakref.WeakMethod, weakref.ReferenceType, object]:
     try:
         result = weakref.WeakMethod(item)
     except TypeError:
@@ -154,8 +136,8 @@ def create_weak_ref(
 
 
 def restore_weak_ref(
-        item_ref: Union[Callable, object, weakref.ReferenceType]
-        ) -> Union[weakref.ReferenceType, object]:
+    item_ref: Union[Callable, object, weakref.ReferenceType]
+) -> Union[weakref.ReferenceType, object]:
     result = item_ref
     if isinstance(result, weakref.ReferenceType):
         result = result()

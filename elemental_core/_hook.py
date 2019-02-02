@@ -31,7 +31,7 @@ class BoundHook(object):
     def add_handler(self, handler: Callable) -> None:
         handler_ref = self._create_handler_ref(handler)
         if not handler_ref:
-            msg = 'Failed to add handler: Unable to create weak reference.'
+            msg = "Failed to add handler: Unable to create weak reference."
             raise ValueError(msg)
 
         self._handler_refs.append(handler_ref)
@@ -52,11 +52,11 @@ class BoundHook(object):
             if handler:
                 handler(sender, data)
 
-    def __iadd__(self, handler: Callable) -> 'BoundHook':
+    def __iadd__(self, handler: Callable) -> "BoundHook":
         self.add_handler(handler)
         return self
 
-    def __isub__(self, handler: Callable) -> 'BoundHook':
+    def __isub__(self, handler: Callable) -> "BoundHook":
         self.remove_handler(handler)
         return self
 

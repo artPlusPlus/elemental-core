@@ -50,5 +50,5 @@ class ElementalError(Exception):
 
     def __str__(self):
         if self._inner_error:
-            return '{0}\n{1}'.format(self._message, self.traceback)
+            return "{0}\n{1}".format(self._message, self.traceback)
         return self._message
