@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import Any, Callable
 
@@ -38,15 +40,15 @@ class BoundForwardReference(object):
                 result = self._reference_resolver(ref_key)
         except Exception as e:
             if ref_key is NO_VALUE:
-                msg = "Failed to resolve reference: {0} - {1}"
-                msg = msg.format(type(e).__name__, e)
+                msg = f"Failed to resolve reference: {type(e).__name__} - {e}"
             else:
-                msg = 'Failed to resolve reference "{0}": {1} - {2}'
-                msg = msg.format(ref_key, type(e).__name__, e)
+                msg = (
+                    f"Failed to resolve reference: '{ref_key}': "
+                    f"{type(e).__name__} - {e}"
+                )
             _LOG.debug(msg)
         else:
-            msg = 'Resolved Resource: "{0}"'
-            msg = msg.format(repr(result))
+            msg = f"Resolved Resource: '{repr(result)}'"
             _LOG.debug(msg)
 
         return result
@@ -74,21 +76,21 @@ class ForwardReference(object):
         self._populated_setter = populated_setter
         self._reference_resolver = reference_resolver
 
-    def key_getter(self, key_getter: Callable) -> "ForwardReference":
+    def key_getter(self, key_getter: Callable) -> ForwardReference:
         return type(self)(
             key_getter=key_getter,
             populated_setter=self._populated_setter,
             reference_resolver=self._reference_resolver,
         )
 
-    def populated(self, populated_setter: Callable) -> "ForwardReference":
+    def populated(self, populated_setter: Callable) -> ForwardReference:
         return type(self)(
             key_getter=self._key_getter,
             populated_setter=populated_setter,
             reference_resolver=self._reference_resolver,
         )
 
-    def resolver(self, reference_resolver: Callable) -> "ForwardReference":
+    def resolver(self, reference_resolver: Callable) -> ForwardReference:
         return type(self)(
             key_getter=self._key_getter,
             populated_setter=self._populated_setter,

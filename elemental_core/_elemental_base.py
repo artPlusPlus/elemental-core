@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Iterator
 
 
@@ -7,7 +9,7 @@ class ElementalBase(object):
     """
 
     @classmethod
-    def iter_elemental_types(cls) -> Iterator["ElementalBase"]:
+    def iter_elemental_types(cls) -> Iterator[ElementalBase]:
         subclasses = cls.__subclasses__()
         while subclasses:
             subclass = subclasses.pop()

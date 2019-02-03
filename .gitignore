@@ -86,6 +86,7 @@ envs/
 scratch/
 tests/.cache/
 .pypirc
+.pytest_cache/
 
 
 # =========================

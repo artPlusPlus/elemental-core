@@ -1,11 +1,11 @@
 import uuid
 import weakref
-from typing import AnyStr, Sequence, List, Union, Optional, Callable
+from typing import Sequence, List, Union, Optional, Callable, Set
 
 from ._elemental_base import ElementalBase
 
 
-def process_uuid_value(value: Union[AnyStr, uuid.UUID]) -> Optional[uuid.UUID]:
+def process_uuid_value(value: Union[str, uuid.UUID]) -> Optional[uuid.UUID]:
     """
     Processes a value into a UUID.
 
@@ -20,21 +20,21 @@ def process_uuid_value(value: Union[AnyStr, uuid.UUID]) -> Optional[uuid.UUID]:
             into a UUID instance.
     """
     if not value:
-        result = None
-    elif isinstance(value, uuid.UUID):
-        result = value
-    else:
-        try:
-            result = uuid.UUID(value)
-        except (TypeError, ValueError):
-            msg = 'Invalid uuid value: "{0}"'
-            msg = msg.format(value)
-            raise ValueError(msg)
+        return None
+
+    if isinstance(value, uuid.UUID):
+        return value
+
+    try:
+        result = uuid.UUID(value)
+    except (TypeError, ValueError):
+        msg = f"Invalid uuid value: '{value}'"
+        raise ValueError(msg)
 
     return result
 
 
-def process_uuids_value(value: Sequence[Union[AnyStr, uuid.UUID]]) -> List[uuid.UUID]:
+def process_uuids_value(value: Sequence[Union[str, uuid.UUID]]) -> List[uuid.UUID]:
     """
     Processes a sequence of values into a sequence of UUIDs.
 
@@ -60,28 +60,28 @@ def process_uuids_value(value: Sequence[Union[AnyStr, uuid.UUID]]) -> List[uuid.
 
     valid_values = []
     invalid_values = []
-    for id in result:
+    for _id in result:
         try:
-            id = process_uuid_value(id)
+            _id = process_uuid_value(_id)
         except ValueError:
-            invalid_values.append(id)
+            invalid_values.append(_id)
         else:
-            valid_values.append(id)
+            valid_values.append(_id)
 
     if invalid_values:
-        invalid_values = ['"{0}"'.format(id) for id in invalid_values]
-        invalid_values = ", ".join(invalid_values)
-        msg = "Invalid uuid values: {0}"
-        msg = msg.format(invalid_values)
+        invalid_values = [f"'{_id}'" for _id in invalid_values]
+        msg = f"Invalid uuid values: {', '.join(invalid_values)}"
         raise ValueError(msg)
 
-    seen = set()
+    seen: Set[uuid.UUID] = set()
     result = [id for id in valid_values if id and not (id in seen or seen.add(id))]
 
     return result
 
 
-def process_elemental_class_value(value: Union[AnyStr, ElementalBase]) -> ElementalBase:
+def process_elemental_class_value(
+    value: Union[str, ElementalBase]
+) -> Optional[ElementalBase]:
     """
     Processes a name into an Elemental class.
 
@@ -106,7 +106,7 @@ def process_elemental_class_value(value: Union[AnyStr, ElementalBase]) -> Elemen
     return result
 
 
-def process_data_format_value(value: AnyStr) -> Optional[AnyStr]:
+def process_data_format_value(value: str) -> Optional[str]:
     """
     Computes a standardized label for a data format.
 

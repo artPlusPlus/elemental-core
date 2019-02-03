@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import weakref
 
 from typing import Any, Callable
@@ -52,11 +54,11 @@ class BoundHook(object):
             if handler:
                 handler(sender, data)
 
-    def __iadd__(self, handler: Callable) -> "BoundHook":
+    def __iadd__(self, handler: Callable) -> BoundHook:
         self.add_handler(handler)
         return self
 
-    def __isub__(self, handler: Callable) -> "BoundHook":
+    def __isub__(self, handler: Callable) -> BoundHook:
         self.remove_handler(handler)
         return self
 
